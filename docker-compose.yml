@@ -1,0 +1,22 @@
+version: "3"
+services:
+  node_app:
+    build: .
+    ports:
+      - 3030:3030
+#     depends_on:
+#       - postgres
+    
+#   postgres:
+#     image: postgres:10:16
+#     environment:
+#       POSTGRES_USER: ifeoluwa
+#       POSTGRES_PASSWORD: somePassword
+#       POSTGRES_DB: cloudStore
+#     ports:
+#       - 5432:5432
+#     volumes:
+#       - db-data:/var/lib/postgresql/data
+
+# volumes:
+#   db-data:

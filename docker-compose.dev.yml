@@ -1,0 +1,13 @@
+version: '3'
+services:
+  node_app:
+    build: 
+      context: .
+      args:
+        NODE_ENV: development
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    env_file:
+      - ./app.env
+    command: npm run dev
