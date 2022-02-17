@@ -1,8 +1,6 @@
 // configure the environment variables
 require("dotenv").config({ path: "./app.env" });
 
-global.__basedir = __dirname;
-
 // set the port
 const PORT = process.env.PORT;
 
