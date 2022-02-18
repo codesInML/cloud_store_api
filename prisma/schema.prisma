@@ -9,3 +9,37 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id String @id @default(uuid())
+  fullName String @db.VarChar(255)
+  email String @unique
+  password String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  folders Folder[]
+}
+
+model Content {
+  id String @id @default(uuid())
+  name String @db.VarChar(255)
+  isFolder Boolean
+  folders ContentsInFolder[]
+}
+
+model Folder {
+  id String @id @default(uuid())
+  name String @db.VarChar(255)
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+  contents ContentsInFolder[]
+}
+
+model ContentsInFolder {
+  folder       Folder     @relation(fields: [folderId], references: [id])
+  folderId     String
+  content   Content @relation(fields: [contentId], references: [id])
+  contentId String
+
+  @@id([folderId, contentId])
+}
