@@ -1,29 +1,31 @@
-import { SessionOutput } from "../models/session";
-import models from "../models";
+import { PrismaClient, Session } from "@prisma/client"
+import bcrypt from "bcrypt"
 
-const { Session } = models;
+const prisma = new PrismaClient()
+
+const {session} = prisma
 
 export const create = async (
-  userId: string,
+  user_id: string,
   userAgent: string
-): Promise<SessionOutput> => {
-  return await Session.create({ userId, userAgent });
+): Promise<Session> => {
+  return await session.create({data: { user_id, userAgent }});
 };
 
-export const findOne = async (id: string): Promise<SessionOutput> => {
-  return await Session.findOne({ where: { id } });
+export const findOne = async (id: string): Promise<Session | null> => {
+  return await session.findUnique({ where: { id } });
 };
 
 export const findAll = async (
-  userId: string,
+  user_id: string,
   valid: boolean
-): Promise<SessionOutput> => {
-  return await Session.findAll({ where: { userId, valid } });
+): Promise<Session[]> => {
+  return await session.findMany({ where: { user_id, valid } });
 };
 
 export const update = async (
-  userId: string,
+  user_id: string,
   valid: boolean
-): Promise<SessionOutput> => {
-  return await Session.update({ valid }, { where: { userId } });
+): Promise<Session> => {
+  return await session.update({ where: { user_id }, data: { valid } });
 };

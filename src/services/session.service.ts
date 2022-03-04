@@ -1,13 +1,13 @@
 import { get } from "lodash";
 import * as SessionDAL from "../DAL/session.dal";
 import * as UserDAL from "../DAL/user.dal";
-import { SessionOutput } from "../models/session";
+import { Session } from "@prisma/client"
 import { signJWT, verifyJWT } from "../utils/jwt-utils";
 
 export async function createSession(
   userId: string,
   userAgent: string
-): Promise<SessionOutput> {
+): Promise<Session> {
   return await SessionDAL.create(userId, userAgent);
 }
 
@@ -34,13 +34,13 @@ export async function reIssueAccessToken({
 
   if (!session || !session.valid) return false;
 
-  const user = await UserDAL.findOne(session.userId);
+  const user = await UserDAL.findOne(session.user_id);
 
   if (!user) return false;
 
   // create an access token
   const accessToken = signJWT(
-    { ...user, session: session.userId },
+    { ...user, session: session.user_id },
     { expiresIn: process.env.ACCESS_TOKEN_TTL as string }
   ); // 5 minutes
 

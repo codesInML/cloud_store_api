@@ -17,29 +17,40 @@ model User {
   password String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  folders Folder[]
+  mainFolder mainFolder?
+  content Content[]
+  sessions Session[]
 }
+
+model Session {
+  id String @id @default(uuid())
+  valid Boolean @default(true)
+  userAgent String
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+}
+
+model mainFolder {
+  id String @id @default(uuid())
+  name String @db.VarChar(255)
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+  content Content[]
+}
+
+// TODOS:
+// mainFolder
+// subFolders or contents
+// subFolders can have subFolders but contents cannot
 
 model Content {
   id String @id @default(uuid())
   name String @db.VarChar(255)
   isFolder Boolean
-  folders ContentsInFolder[]
-}
-
-model Folder {
-  id String @id @default(uuid())
-  name String @db.VarChar(255)
+  parentFolder mainFolder @relation(fields: [parentFolderId], references: [id])
+  parentFolderId String
   user User @relation(fields: [user_id], references: [id])
   user_id String
-  contents ContentsInFolder[]
-}
-
-model ContentsInFolder {
-  folder       Folder     @relation(fields: [folderId], references: [id])
-  folderId     String
-  content   Content @relation(fields: [contentId], references: [id])
-  contentId String
-
-  @@id([folderId, contentId])
+  folder Content[]  @relation("FolderContent", references: [id])
+  subFolder  Content[]  @relation("FolderContent", references: [id])
 }
